@@ -35,10 +35,8 @@ def quest1(user_name):
     return 'Hello,' + user_name
 
 def checkpassf(form, field):
-    checkpass_res = 0
     if form.data['pass1'] != form.data['pass2']:
-        checkpass_res = 1
-        return checkpass_res
+        raise ValueError('Passwords dont so match')
 
 class UsersF(FlaskForm):
     email = StringField(label='email', validators=[
@@ -58,11 +56,9 @@ def home():
     if request.method == 'POST':
         print(request.form)
         user_form = UsersF(request.form)
-        status_output = {0:'Проверка пройдена', 1: 'Ошибка валидации'}
-        if user_form.validate() and checkpass_res == 0:
+        status_output = {0:'All right', 1: 'validate error'}
+        if user_form.validate():
             return json.dumps(status_output[0])
-        elif user_form.validate() and checkpass_res == 1:
-            return json.dumps(status_output[1]) and 'Passwords is dont so match'
         else:
             return json.dumps(status_output[1]) and json.dumps(user_form.errors)
         
